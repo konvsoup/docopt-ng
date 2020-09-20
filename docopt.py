@@ -24,7 +24,6 @@ Contributors (roughly in chronological order):
 
 import sys
 import re
-import inspect
 
 
 from typing import Any, List, Optional, Tuple, Type, Union, Dict, Callable
@@ -723,35 +722,7 @@ def docopt(
 
     """
     argv = sys.argv[1:] if argv is None else argv
-    maybe_frame = inspect.currentframe()
-    if maybe_frame:
-        parent_frame = doc_parent_frame = magic_parent_frame = maybe_frame.f_back
-    if not more_magic:  # make sure 'magic' isn't in the calling name
-        while not more_magic and magic_parent_frame:
-            imported_as = {v: k for k, v in magic_parent_frame.f_globals.items() if hasattr(v, "__name__") and v.__name__ == docopt.__name__}.get(docopt)
-            if imported_as and "magic" in imported_as:
-                more_magic = True
-            else:
-                magic_parent_frame = magic_parent_frame.f_back
-    if not docstring:  # go look for one, if none exists, raise Exception
-        while not docstring and doc_parent_frame:
-            docstring = doc_parent_frame.f_locals.get("__doc__")
-            if not docstring:
-                doc_parent_frame = doc_parent_frame.f_back
-        if not docstring:
-            raise DocoptLanguageError("Either __doc__ must be defined in the scope of a parent or passed as the first argument.")
     output_value_assigned = False
-    if more_magic and parent_frame:
-        import dis
-
-        instrs = dis.get_instructions(parent_frame.f_code)
-        for instr in instrs:
-            if instr.offset == parent_frame.f_lasti:
-                break
-        assert instr.opname.startswith("CALL_")
-        MAYBE_STORE = next(instrs)
-        if MAYBE_STORE and (MAYBE_STORE.opname.startswith("STORE") or MAYBE_STORE.opname.startswith("RETURN")):
-            output_value_assigned = True
     usage_sections = parse_section("usage:", docstring)
     if len(usage_sections) == 0:
         raise DocoptLanguageError('"usage:" section (case-insensitive) not found. Perhaps missing indentation?')
@@ -772,14 +743,8 @@ def docopt(
     matched, left, collected = pattern.fix().match(parsed_arg_vector)
     if matched and left == []:
         output_obj = ParsedOptions((a.name, a.value) for a in (pattern.flat() + collected))
-        target_parent_frame = parent_frame or magic_parent_frame or doc_parent_frame
-        if more_magic and target_parent_frame and not output_value_assigned:
-            if not target_parent_frame.f_globals.get("arguments"):
-                target_parent_frame.f_globals["arguments"] = output_obj
         return output_obj
     if left:
         raise DocoptExit(f"Warning: found unmatched (duplicate?) arguments {left}")
     raise DocoptExit(collected=collected, left=left)
 
-
-# magic = magic_docopt = docopt

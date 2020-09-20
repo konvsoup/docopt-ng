@@ -58,18 +58,3 @@ def test_docopt_ng_doubledash_version():
         args = docopt.docopt("usage: prog", version=1, argv="prog --version")
     assert pytest_wrapped_e.type == SystemExit
 
-
-def test_docopt_ng__doc__if_no_doc_indirection():
-    import sys
-
-    __doc__, sys.argv = "usage: prog --long=<a>", [None, "--long="]
-
-    def test_indirect():
-        return docopt.docopt()
-
-    assert test_indirect() == {"--long": ""}
-
-    def test_even_more_indirect():
-        return test_indirect()
-
-    assert test_even_more_indirect() == {"--long": ""}
