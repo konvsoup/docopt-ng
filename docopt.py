@@ -782,4 +782,4 @@ def docopt(
     raise DocoptExit(collected=collected, left=left)
 
 
-magic = magic_docopt = docopt
+# magic = magic_docopt = docopt
