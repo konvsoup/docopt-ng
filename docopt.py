@@ -28,7 +28,7 @@ import re
 
 from typing import Any, List, Optional, Tuple, Type, Union, Dict, Callable
 
-__all__ = ["docopt", "magic_docopt", "magic"]
+__all__ = ["docopt"]
 __version__ = "0.7.2"
 
 
@@ -179,7 +179,7 @@ class LeafPattern(Pattern):
         pos, match = self.single_match(left)
         if match is None or pos is None:
             return False, left, collected
-        left_ = left[:pos] + left[(pos + 1) :]
+        left_ = left[:pos] + left[(pos + 1):]
         same_name = [a for a in collected if a.name == self.name]
         if type(self.value) == int and len(same_name) > 0:
             if isinstance(same_name[0].value, int):
@@ -722,7 +722,6 @@ def docopt(
 
     """
     argv = sys.argv[1:] if argv is None else argv
-    output_value_assigned = False
     usage_sections = parse_section("usage:", docstring)
     if len(usage_sections) == 0:
         raise DocoptLanguageError('"usage:" section (case-insensitive) not found. Perhaps missing indentation?')
@@ -748,3 +747,18 @@ def docopt(
         raise DocoptExit(f"Warning: found unmatched (duplicate?) arguments {left}")
     raise DocoptExit(collected=collected, left=left)
 
+
+if __name__ == "__main__":
+
+    doc = '''
+    ... Usage:
+    ...     my_program tcp <host> <port> [--timeout=<seconds>]
+    ...     my_program serial <port> [--baud=<n>] [--timeout=<seconds>]
+    ...     my_program (-h | --help | --version)
+    ...
+    ... Options:
+    ...     -h, --help  Show this screen and exit.
+    ...     --baud=<n>  Baudrate [default: 9600]
+    ... '''
+    argv = ['tcp', '127.0.0.1', '80', '--timeout', '30']
+    print(docopt(doc, argv))
