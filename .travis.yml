@@ -9,4 +9,4 @@ matrix:
       dist: xenial
       sudo: true
 install: pip install tox tox-travis
-script: tox
+script: pytest
