@@ -1,10 +1,8 @@
+fork [![Build Status](https://travis-ci.org/konvsoup/docopt-ng.svg?branch=master)](https://travis-ci.org/konvsoup/docopt-ng)
+
+---
+
 # `docopt-ng` creates *magic* command-line interfaces
-
-[![image](https://travis-ci.org/bazaar-projects/docopt-ng.svg?branch=master)](https://travis-ci.org/bazaar-projects/docopt-ng)
-
-[![codecov](https://codecov.io/gh/bazaar-projects/docopt-ng/branch/master/graph/badge.svg)](https://codecov.io/gh/bazaar-projects/docopt-ng)
-
-[![image](https://img.shields.io/pypi/v/docopt-ng.svg)](https://pypi.python.org/pypi/docopt-ng)
 
 ## CHANGELOG
 
