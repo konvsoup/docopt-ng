@@ -24,7 +24,7 @@ def test_docopt_ng_more_magic_spellcheck_and_expansion():
     ]
 
 
-def test_docopt_ng_as_magic_docopt_more_magic_global_arguments_and_dot_access():
+def test_docopt_ng_dot_access():
     doc = """Usage: prog [-vqr] [FILE]
               prog INPUT OUTPUT
               prog --help
@@ -36,49 +36,16 @@ def test_docopt_ng_as_magic_docopt_more_magic_global_arguments_and_dot_access():
       --help
 
     """
-    global arguments
-    magic_docopt(doc, "-v file.py")
+    arguments = docopt.docopt(doc, "-v file.py")
     assert arguments == {"-v": True, "-q": False, "-r": False, "--help": False, "FILE": "file.py", "INPUT": None, "OUTPUT": None}
     assert arguments.v == True
     assert arguments.FILE == "file.py"
     arguments = None
-    magic(doc, "-v file.py")
+    arguments = docopt.docopt(doc, "-v file.py")
     assert arguments == {"-v": True, "-q": False, "-r": False, "--help": False, "FILE": "file.py", "INPUT": None, "OUTPUT": None}
     assert arguments.v == True
     assert arguments.FILE == "file.py"
     arguments = None
-    user_provided_alias_containing_magic(doc, "-v file.py")
-    assert arguments == {"-v": True, "-q": False, "-r": False, "--help": False, "FILE": "file.py", "INPUT": None, "OUTPUT": None}
-
-
-def test_docopt_ng_more_magic_global_arguments_and_dot_access():
-    doc = """Usage: prog [-vqr] [FILE]
-              prog INPUT OUTPUT
-              prog --help
-
-    Options:
-      -v  print status messages
-      -q  report only file names
-      -r  show all occurrences of the same error
-      --help
-
-    """
-    arguments = docopt.docopt(doc, "-v file.py", more_magic=True)
-    assert arguments == {"-v": True, "-q": False, "-r": False, "--help": False, "FILE": "file.py", "INPUT": None, "OUTPUT": None}
-    assert arguments.v == True
-    assert arguments.FILE == "file.py"
-    arguments = None
-    docopt.docopt(doc.replace("FILE", "<FILE>"), "-v", more_magic=True)
-    assert arguments == {"-v": True, "-q": False, "-r": False, "--help": False, "<FILE>": None, "INPUT": None, "OUTPUT": None}
-    assert arguments.FILE == None
-
-    with raises(DocoptExit):
-        docopt.docopt(doc, "-v input.py output.py")
-
-    with raises(DocoptExit):
-        docopt.docopt(doc, "--fake")
-
-
 
 
 def test_docopt_ng_negative_float():
