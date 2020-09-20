@@ -5,8 +5,5 @@ matrix:
     - python: 3.6
       dist: xenial
       sudo: true
-    - python: 3.7
-      dist: xenial
-      sudo: true
 install: pip install tox tox-travis
 script: pytest
