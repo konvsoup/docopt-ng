@@ -22,7 +22,7 @@ class CalcVisitor(PTNodeVisitor):
         """
         if self.debug:
             print("Converting {}.".format(node.value))
-            return float(node.value)
+        return float(node.value)
 
     def visit_factor(self, node, children):
         """
